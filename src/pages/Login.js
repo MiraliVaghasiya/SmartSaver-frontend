@@ -25,11 +25,14 @@ function Login({ setIsAuthenticated }) {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginInfo),
-      });
+      const response = await fetch(
+        `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app//auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(loginInfo),
+        }
+      );
 
       const data = await response.json();
       setLoading(false);
@@ -55,11 +58,14 @@ function Login({ setIsAuthenticated }) {
 
   // ✅ FIX: Ensure correct endpoint for Google login
   const handleGoogleLogin = (response) => {
-    fetch(`http://localhost:8080/auth/google`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ credential: response.credential }),
-    })
+    fetch(
+      `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app//auth/google`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential: response.credential }),
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
