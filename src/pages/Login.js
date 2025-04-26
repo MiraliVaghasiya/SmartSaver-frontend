@@ -26,7 +26,7 @@ function Login({ setIsAuthenticated }) {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app//auth/login`,
+        `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -59,7 +59,7 @@ function Login({ setIsAuthenticated }) {
   // ✅ FIX: Ensure correct endpoint for Google login
   const handleGoogleLogin = (response) => {
     fetch(
-      `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app//auth/google`,
+      `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app/auth/google`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

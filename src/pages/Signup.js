@@ -29,7 +29,7 @@ function Signup({ setIsAuthenticated }) {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app//auth/signup`,
+        `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app/auth/signup`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -43,6 +43,11 @@ function Signup({ setIsAuthenticated }) {
       if (result.success) {
         handleSuccess("Signup successful!");
         localStorage.setItem("token", result.jwtToken);
+        localStorage.setItem(
+          "loggedInUser",
+          JSON.stringify({ name: result.name, email: result.email })
+        );
+        setIsAuthenticated(true);
         setTimeout(() => navigate("/dashboard"), 1000);
       } else {
         handleError(result.message || "Signup failed");
@@ -55,7 +60,7 @@ function Signup({ setIsAuthenticated }) {
 
   const handleGoogleSignup = (response) => {
     fetch(
-      `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app//auth/google`,
+      `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app/auth/google`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
