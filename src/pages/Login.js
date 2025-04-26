@@ -58,6 +58,13 @@ function Login({ setIsAuthenticated }) {
 
   // ✅ FIX: Ensure correct endpoint for Google login
   const handleGoogleLogin = (response) => {
+    console.log("Google login response received:", response);
+
+    if (!response.credential) {
+      handleError("Google login failed: No credential received");
+      return;
+    }
+
     fetch(
       `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app/auth/google`,
       {
@@ -66,8 +73,14 @@ function Login({ setIsAuthenticated }) {
         body: JSON.stringify({ credential: response.credential }),
       }
     )
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Server responded with status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
+        console.log("Google login server response:", data);
         if (data.success) {
           handleSuccess("Google Login successful!");
           localStorage.setItem("token", data.jwtToken);
@@ -78,10 +91,13 @@ function Login({ setIsAuthenticated }) {
           setIsAuthenticated(true); // ✅ Update authentication state
           navigate("/dashboard");
         } else {
-          handleError("Google Login failed. Try again.");
+          handleError(data.message || "Google Login failed. Try again.");
         }
       })
-      .catch(() => handleError("Something went wrong with Google Login!"));
+      .catch((error) => {
+        console.error("Google login error:", error);
+        handleError(`Something went wrong with Google Login: ${error.message}`);
+      });
   };
 
   return (

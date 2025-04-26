@@ -5,7 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import { useEffect, useState } from "react";
 import RefreshHandler from "./RefreshHandler";
-import Home from './pages/Home';
+import Home from "./pages/Home";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,15 +22,32 @@ function App() {
   };
 
   return (
-    <GoogleOAuthProvider clientId="889292981742-ucknqtugi62s3em7r185in1prat5revr.apps.googleusercontent.com">
+    <GoogleOAuthProvider
+      clientId="889292981742-ucknqtugi62s3em7r185in1prat5revr.apps.googleusercontent.com"
+      onScriptLoadSuccess={() => {
+        console.log("Google OAuth script loaded successfully");
+      }}
+      onScriptLoadError={(error) => {
+        console.error("Google OAuth script load error:", error);
+      }}
+    >
       <div>
         <RefreshHandler setIsAuthenticated={setIsAuthenticated} />
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-          <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
-          <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
+          <Route
+            path="/login"
+            element={<Login setIsAuthenticated={setIsAuthenticated} />}
+          />
+          <Route
+            path="/signup"
+            element={<Signup setIsAuthenticated={setIsAuthenticated} />}
+          />
+          <Route
+            path="/dashboard"
+            element={<PrivateRoute element={<Dashboard />} />}
+          />
         </Routes>
       </div>
     </GoogleOAuthProvider>
