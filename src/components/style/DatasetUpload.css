@@ -1,0 +1,57 @@
+/* DatasetUpload.css
+.container {
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  input[type="file"] {
+    margin: 10px 0;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    padding: 12px 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 15px 0;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  
+  button:hover {
+    background-color: #388E3C;
+  }
+  
+  button:disabled {
+    background-color: #ccc;
+  }
+  
+  .analysis-box {
+    margin-top: 20px;
+    padding: 15px;
+    border: 2px solid #4CAF50;
+    background-color: #E8F5E9;
+    border-radius: 8px;
+  }
+  
+  .charts {
+    margin-top: 20px;
+  }
+  
+  .chart-container {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ddd;
+    background-color: #FAFAFA;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+   */
