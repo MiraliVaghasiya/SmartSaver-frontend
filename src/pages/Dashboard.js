@@ -123,9 +123,7 @@ const Dashboard = () => {
             <div className="user-info">
               <span className="username">{userData.displayName}</span>
               <img
-                src={`https://avatar.iran.liara.run/public/${encodeURIComponent(
-                  userData.email || userData.username || "user"
-                )}`}
+                src="https://avatar.iran.liara.run/public"
                 alt="User Avatar"
                 className="user-avatar"
               />
