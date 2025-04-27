@@ -26,7 +26,7 @@ function Login({ setIsAuthenticated }) {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app/auth/login`,
+        `https://smart-saver-backend.vercel.app/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -65,14 +65,11 @@ function Login({ setIsAuthenticated }) {
       return;
     }
 
-    fetch(
-      `https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app/auth/google`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ credential: response.credential }),
-      }
-    )
+    fetch(`https://smart-saver-backend.vercel.app/auth/google`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential: response.credential }),
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Server responded with status: ${res.status}`);

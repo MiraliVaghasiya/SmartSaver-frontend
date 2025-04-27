@@ -4,14 +4,11 @@ import { handleError } from "../utils";
 
 const GoogleLoginButton = ({ setIsAuthenticated }) => {
   const handleSuccessResponse = (response) => {
-    fetch(
-      "https://smart-saver-backend-hv6p5zke2-miralivaghasiyas-projects.vercel.app//auth/google",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: response.credential }),
-      }
-    )
+    fetch("https://smart-saver-backend.vercel.app/auth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: response.credential }),
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
