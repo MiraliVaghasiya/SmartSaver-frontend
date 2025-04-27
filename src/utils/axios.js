@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://smart-saver-backend.vercel.app/",
+  baseURL: "https://smart-saver-backend.vercel.app",
 });
 
 // Add a request interceptor
