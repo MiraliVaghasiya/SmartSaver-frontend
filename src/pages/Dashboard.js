@@ -122,11 +122,6 @@ const Dashboard = () => {
           <div className="user-profile">
             <div className="user-info">
               <span className="username">{userData.displayName}</span>
-              <img
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.displayName}`}
-                alt="User Avatar"
-                className="user-avatar"
-              />
             </div>
             <button className="logout-button" onClick={handleLogout}>
               Logout
