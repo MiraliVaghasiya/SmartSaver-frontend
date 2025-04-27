@@ -27,7 +27,7 @@ const Dashboard = () => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
-          const response = await axiosInstance.get("/users/profile");
+          const response = await axiosInstance.get("/dashboard/users/profile");
           const user = response.data;
 
           // Set display name based on available data
