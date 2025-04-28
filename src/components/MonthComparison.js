@@ -71,38 +71,38 @@ const MonthComparison = ({ datasets, onCompare }) => {
     return total;
   };
 
-  // Get appliance totals for a specific (month, year) pair
-  const getApplianceMonthYearTotal = (dataset, monthName, year) => {
-    if (!dataset?.analysis)
-      return {
-        shower: 0,
-        toilet: 0,
-        dishwasher: 0,
-        washingMachine: 0,
-        sink: 0,
-      };
+  // Get appliance breakdown for a specific (month, year) pair
+  const getApplianceMonthYearTotal = (data, monthName, year) => {
+    if (!data?.labels || !data?.datasets?.[0]?.data) return 0;
+    let total = 0;
 
-    const getTotal = (data) => {
-      if (!data?.labels || !data?.datasets?.[0]?.data) return 0;
-      let total = 0;
-      data.labels.forEach((label, index) => {
-        const parts = label.includes("-") ? label.split("-") : label.split("/");
+    data.labels.forEach((label, index) => {
+      try {
+        let parts;
+        if (label.includes("-")) {
+          parts = label.split("-");
+        } else if (label.includes("/")) {
+          parts = label.split("/");
+        } else if (label.includes(".")) {
+          parts = label.split(".");
+        } else {
+          return; // Skip if format is not recognized
+        }
+
         const monthNum = parseInt(parts[1]) - 1;
         const labelYear = parts[2];
-        if (monthNames[monthNum] === monthName && labelYear === year) {
-          total += parseFloat(data.datasets[0].data[index]) || 0;
-        }
-      });
-      return total;
-    };
 
-    return {
-      shower: getTotal(dataset.analysis.bathingData),
-      toilet: getTotal(dataset.analysis.drinkingData),
-      dishwasher: getTotal(dataset.analysis.dishwashingData),
-      washingMachine: getTotal(dataset.analysis.washingClothesData),
-      sink: getTotal(dataset.analysis.cookingData),
-    };
+        if (monthNames[monthNum] === monthName && labelYear === year) {
+          const value = parseFloat(data.datasets[0].data[index]);
+          if (!isNaN(value)) {
+            total += value;
+          }
+        }
+      } catch (error) {
+        console.error("Error processing appliance data point:", label, error);
+      }
+    });
+    return total;
   };
 
   const handleMonthYearSelect = (monthYear) => {
@@ -131,7 +131,7 @@ const MonthComparison = ({ datasets, onCompare }) => {
       ).getDate();
       const dailyAverage = total / daysInMonth;
 
-      // Get appliance breakdowns for the month-year
+      // Appliance breakdowns for the month-year
       const applianceData = {
         shower: 0,
         toilet: 0,
@@ -141,12 +141,40 @@ const MonthComparison = ({ datasets, onCompare }) => {
       };
 
       datasets.forEach((dataset) => {
-        const totals = getApplianceMonthYearTotal(dataset, monthName, year);
-        applianceData.shower += totals.shower;
-        applianceData.toilet += totals.toilet;
-        applianceData.dishwasher += totals.dishwasher;
-        applianceData.washingMachine += totals.washingMachine;
-        applianceData.sink += totals.sink;
+        if (dataset?.analysis) {
+          const {
+            showerData,
+            toiletData,
+            dishwasherData,
+            washingMachineData,
+            sinkData,
+          } = dataset.analysis;
+          applianceData.shower += getApplianceMonthYearTotal(
+            showerData,
+            monthName,
+            year
+          );
+          applianceData.toilet += getApplianceMonthYearTotal(
+            toiletData,
+            monthName,
+            year
+          );
+          applianceData.dishwasher += getApplianceMonthYearTotal(
+            dishwasherData,
+            monthName,
+            year
+          );
+          applianceData.washingMachine += getApplianceMonthYearTotal(
+            washingMachineData,
+            monthName,
+            year
+          );
+          applianceData.sink += getApplianceMonthYearTotal(
+            sinkData,
+            monthName,
+            year
+          );
+        }
       });
 
       return {
@@ -247,16 +275,16 @@ const MonthComparison = ({ datasets, onCompare }) => {
                       <>
                         <p>
                           <strong>Highest Usage:</strong> {highest.monthYear} (
-                          {highest.total.toFixed(2)} liters)
+                          {highest.total.toFixed(2)} L)
                         </p>
                         <p>
                           <strong>Lowest Usage:</strong> {lowest.monthYear} (
-                          {lowest.total.toFixed(2)} liters)
+                          {lowest.total.toFixed(2)} L)
                         </p>
                         {highest.total > 0 && lowest.total > 0 && (
                           <p>
                             <strong>Difference:</strong> {difference.toFixed(2)}{" "}
-                            liters ({percentageDiff.toFixed(1)}%{" "}
+                            L ({percentageDiff.toFixed(1)}%{" "}
                             {difference > 0 ? "increase" : "decrease"})
                           </p>
                         )}
