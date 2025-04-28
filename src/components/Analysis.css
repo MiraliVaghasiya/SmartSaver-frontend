@@ -121,7 +121,7 @@
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   transition: transform 0.3s ease;
-  width: 900px;
+  width: 350px;
   transform: translateX(-100%);
   overflow-y: auto;
 }
@@ -151,7 +151,7 @@
 }
 
 .toggle-button.open {
-  left: 900px;
+  left: 350px;
 }
 
 .toggle-button:hover {
@@ -395,25 +395,4 @@
 .download-button::before {
   content: "📥";
   font-size: 1.2rem;
-}
-
-.monthly-comparison-graph {
-  margin: 20px 0;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.monthly-comparison-graph h4 {
-  margin: 0 0 15px 0;
-  color: #2d3748;
-  font-size: 1.1rem;
-}
-
-.comparison-chart-container {
-  width: 100%;
-  height: 400px;
-  position: relative;
-  margin: 0 auto;
 } 

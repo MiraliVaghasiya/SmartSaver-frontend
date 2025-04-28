@@ -1,34 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./style/Summary.css";
 import "./Analysis.css";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 const MonthComparison = ({ datasets, onCompare }) => {
   const [selectedMonthYears, setSelectedMonthYears] = useState([]);
   const [comparisonResults, setComparisonResults] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const comparisonChartRef = useRef(null);
 
   const monthNames = [
     "January",
@@ -186,31 +163,6 @@ const MonthComparison = ({ datasets, onCompare }) => {
     }
   };
 
-  // Prepare chart data for the comparison
-  const getComparisonChartData = () => {
-    if (!comparisonResults || comparisonResults.length < 2) return null;
-
-    const labels = comparisonResults.map((result) => result.month);
-    const datasets = [
-      {
-        label: "Water Usage (L)",
-        data: comparisonResults.map((result) => result.totalUsage),
-        fill: true,
-        tension: 0.3,
-        backgroundColor: "rgba(66, 153, 225, 0.2)",
-        borderColor: "rgba(66, 153, 225, 1)",
-        pointRadius: 4,
-        pointBackgroundColor: "rgba(66, 153, 225, 1)",
-        borderWidth: 2,
-      },
-    ];
-
-    return {
-      labels,
-      datasets,
-    };
-  };
-
   return (
     <>
       <button
@@ -249,54 +201,6 @@ const MonthComparison = ({ datasets, onCompare }) => {
           {comparisonResults && (
             <div className="comparison-results">
               <h3>📊 Comparison Results</h3>
-
-              {/* Monthly Comparison Area Graph */}
-              {comparisonResults.length >= 2 && (
-                <div className="monthly-comparison-graph">
-                  <h4>Monthly Water Usage Comparison</h4>
-                  <div className="comparison-chart-container">
-                    <Line
-                      data={getComparisonChartData()}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                          y: {
-                            beginAtZero: true,
-                            title: {
-                              display: true,
-                              text: "Water Usage (L)",
-                            },
-                          },
-                          x: {
-                            title: {
-                              display: true,
-                              text: "Month",
-                            },
-                          },
-                        },
-                        plugins: {
-                          legend: {
-                            position: "top",
-                          },
-                          tooltip: {
-                            mode: "index",
-                            intersect: false,
-                            callbacks: {
-                              label: function (context) {
-                                return `Usage: ${context.parsed.y.toFixed(
-                                  2
-                                )} L`;
-                              },
-                            },
-                          },
-                        },
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
               <div className="monthly-totals">
                 <h4>Monthly Totals:</h4>
                 {comparisonResults.map((result) => (
