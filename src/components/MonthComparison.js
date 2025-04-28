@@ -71,6 +71,28 @@ const MonthComparison = ({ datasets, onCompare }) => {
     return total;
   };
 
+  // Get appliance totals for a specific (month, year) pair
+  const getApplianceMonthYearTotal = (dataset, monthName, year) => {
+    if (!dataset?.analysis)
+      return {
+        shower: 0,
+        toilet: 0,
+        dishwasher: 0,
+        washingMachine: 0,
+        sink: 0,
+      };
+
+    const appliances = {
+      shower: dataset.analysis.totalShowerConsumption || 0,
+      toilet: dataset.analysis.totalToiletConsumption || 0,
+      dishwasher: dataset.analysis.totalDishwasherConsumption || 0,
+      washingMachine: dataset.analysis.totalWashingMachineConsumption || 0,
+      sink: dataset.analysis.totalSinkConsumption || 0,
+    };
+
+    return appliances;
+  };
+
   const handleMonthYearSelect = (monthYear) => {
     if (selectedMonthYears.includes(monthYear)) {
       setSelectedMonthYears(selectedMonthYears.filter((m) => m !== monthYear));
@@ -96,11 +118,38 @@ const MonthComparison = ({ datasets, onCompare }) => {
         0
       ).getDate();
       const dailyAverage = total / daysInMonth;
+
+      // Calculate appliance totals
+      const applianceTotals = datasets.reduce(
+        (acc, dataset) => {
+          const applianceData = getApplianceMonthYearTotal(
+            dataset,
+            monthName,
+            year
+          );
+          return {
+            shower: acc.shower + applianceData.shower,
+            toilet: acc.toilet + applianceData.toilet,
+            dishwasher: acc.dishwasher + applianceData.dishwasher,
+            washingMachine: acc.washingMachine + applianceData.washingMachine,
+            sink: acc.sink + applianceData.sink,
+          };
+        },
+        {
+          shower: 0,
+          toilet: 0,
+          dishwasher: 0,
+          washingMachine: 0,
+          sink: 0,
+        }
+      );
+
       return {
         monthYear,
         total: total || 0,
         dailyAverage: dailyAverage || 0,
         hasData: total > 0,
+        appliances: applianceTotals,
       };
     });
     setComparisonResults(results);
@@ -158,6 +207,26 @@ const MonthComparison = ({ datasets, onCompare }) => {
                     <p>
                       Daily average: {result.dailyAverage.toFixed(2)} liters
                     </p>
+                    {result.hasData && (
+                      <div className="appliance-breakdown">
+                        <h6>Appliance Breakdown:</h6>
+                        <p>
+                          Shower: {result.appliances.shower.toFixed(2)} liters
+                        </p>
+                        <p>
+                          Toilet: {result.appliances.toilet.toFixed(2)} liters
+                        </p>
+                        <p>
+                          Dishwasher: {result.appliances.dishwasher.toFixed(2)}{" "}
+                          liters
+                        </p>
+                        <p>
+                          Washing Machine:{" "}
+                          {result.appliances.washingMachine.toFixed(2)} liters
+                        </p>
+                        <p>Sink: {result.appliances.sink.toFixed(2)} liters</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
