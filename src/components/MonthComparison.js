@@ -73,11 +73,34 @@ const MonthComparison = ({ datasets, onCompare }) => {
 
   // Get appliance breakdown for a specific (month, year) pair
   const getApplianceMonthYearTotal = (data, monthName, year) => {
-    if (!data?.labels || !data?.datasets?.[0]?.data) return 0;
-    let total = 0;
+    // Validate input data structure
+    if (
+      !data ||
+      !data.labels ||
+      !data.datasets ||
+      !data.datasets[0] ||
+      !data.datasets[0].data
+    ) {
+      console.warn("Invalid appliance data structure:", data);
+      return 0;
+    }
 
-    data.labels.forEach((label, index) => {
+    let total = 0;
+    const labels = data.labels;
+    const values = data.datasets[0].data;
+
+    // Ensure we have matching arrays
+    if (labels.length !== values.length) {
+      console.warn("Mismatch between labels and values length:", {
+        labelsLength: labels.length,
+        valuesLength: values.length,
+      });
+      return 0;
+    }
+
+    labels.forEach((label, index) => {
       try {
+        // Handle different date formats
         let parts;
         if (label.includes("-")) {
           parts = label.split("-");
@@ -86,22 +109,57 @@ const MonthComparison = ({ datasets, onCompare }) => {
         } else if (label.includes(".")) {
           parts = label.split(".");
         } else {
+          console.warn("Unrecognized date format:", label);
           return; // Skip if format is not recognized
         }
 
-        const monthNum = parseInt(parts[1]) - 1;
-        const labelYear = parts[2];
+        // Ensure we have enough parts to extract month and year
+        if (parts.length < 3) {
+          console.warn("Invalid date format (missing parts):", label);
+          return;
+        }
+
+        // Try to determine which part is the month and which is the year
+        let monthNum, labelYear;
+
+        // Check if the second part is a month number (01-12)
+        if (parseInt(parts[1]) >= 1 && parseInt(parts[1]) <= 12) {
+          monthNum = parseInt(parts[1]) - 1; // Convert to 0-based index
+          labelYear = parts[2];
+        }
+        // Check if the first part is a month number (01-12)
+        else if (parseInt(parts[0]) >= 1 && parseInt(parts[0]) <= 12) {
+          monthNum = parseInt(parts[0]) - 1; // Convert to 0-based index
+          labelYear = parts[2];
+        } else {
+          console.warn("Could not determine month from date parts:", parts);
+          return;
+        }
+
+        // Validate month and year
+        if (isNaN(monthNum) || monthNum < 0 || monthNum > 11) {
+          console.warn("Invalid month number:", monthNum, "in label:", label);
+          return;
+        }
 
         if (monthNames[monthNum] === monthName && labelYear === year) {
-          const value = parseFloat(data.datasets[0].data[index]);
+          const value = parseFloat(values[index]);
           if (!isNaN(value)) {
             total += value;
+          } else {
+            console.warn(
+              "Invalid data value at index",
+              index,
+              ":",
+              values[index]
+            );
           }
         }
       } catch (error) {
         console.error("Error processing appliance data point:", label, error);
       }
     });
+
     return total;
   };
 
@@ -142,37 +200,28 @@ const MonthComparison = ({ datasets, onCompare }) => {
 
       datasets.forEach((dataset) => {
         if (dataset?.analysis) {
-          const {
-            showerData,
-            toiletData,
-            dishwasherData,
-            washingMachineData,
-            sinkData,
-          } = dataset.analysis;
-          applianceData.shower += getApplianceMonthYearTotal(
-            showerData,
-            monthName,
-            year
-          );
-          applianceData.toilet += getApplianceMonthYearTotal(
-            toiletData,
-            monthName,
-            year
-          );
-          applianceData.dishwasher += getApplianceMonthYearTotal(
-            dishwasherData,
-            monthName,
-            year
-          );
-          applianceData.washingMachine += getApplianceMonthYearTotal(
-            washingMachineData,
-            monthName,
-            year
-          );
-          applianceData.sink += getApplianceMonthYearTotal(
-            sinkData,
-            monthName,
-            year
+          // Map the data fields to appliance names
+          const applianceMapping = {
+            bathingData: "shower",
+            drinkingData: "toilet",
+            dishwashingData: "dishwasher",
+            washingClothesData: "washingMachine",
+            cookingData: "sink",
+          };
+
+          // Process each appliance's data
+          Object.entries(applianceMapping).forEach(
+            ([dataField, applianceName]) => {
+              const applianceDataField = dataset.analysis[dataField];
+              if (applianceDataField) {
+                const value = getApplianceMonthYearTotal(
+                  applianceDataField,
+                  monthName,
+                  year
+                );
+                applianceData[applianceName] += value;
+              }
+            }
           );
         }
       });

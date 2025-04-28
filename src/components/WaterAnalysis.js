@@ -655,6 +655,59 @@ const WaterAnalysis = ({
     console.log("Comparison results:", results);
   };
 
+  // Add a function to prepare datasets with proper appliance data structure
+  const prepareDatasetsForComparison = (datasets) => {
+    return datasets.map((dataset) => {
+      if (!dataset.analysis) return dataset;
+
+      // Create a copy of the dataset to avoid modifying the original
+      const preparedDataset = { ...dataset };
+
+      // Ensure the analysis object has all required appliance data
+      if (!preparedDataset.analysis) {
+        preparedDataset.analysis = {};
+      }
+
+      // Ensure each appliance data has the correct structure
+      const appliances = [
+        "bathingData",
+        "drinkingData",
+        "dishwashingData",
+        "washingClothesData",
+        "cookingData",
+      ];
+
+      appliances.forEach((appliance) => {
+        if (!preparedDataset.analysis[appliance]) {
+          // Create a properly structured empty data object if missing
+          preparedDataset.analysis[appliance] = {
+            labels: [],
+            datasets: [
+              {
+                data: [],
+                label: appliance.replace("Data", ""),
+              },
+            ],
+          };
+        } else if (
+          !preparedDataset.analysis[appliance].datasets ||
+          !preparedDataset.analysis[appliance].datasets[0]
+        ) {
+          // Ensure the datasets array exists and has at least one dataset
+          preparedDataset.analysis[appliance].datasets = [
+            {
+              data:
+                preparedDataset.analysis[appliance].datasets?.[0]?.data || [],
+              label: appliance.replace("Data", ""),
+            },
+          ];
+        }
+      });
+
+      return preparedDataset;
+    });
+  };
+
   const generatePDFReport = async () => {
     if (!chartData || !chartData.datasets || !chartData.labels) {
       alert("No data available to generate report");
@@ -1252,7 +1305,7 @@ const WaterAnalysis = ({
   return (
     <div className="water-analysis-container">
       <MonthComparison
-        datasets={datasets}
+        datasets={prepareDatasetsForComparison(datasets)}
         onCompare={handleComparisonResults}
       />
 
