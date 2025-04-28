@@ -541,4 +541,58 @@
   min-width: 800px;
   position: relative;
   height: 300px !important; /* Reduced height from 500px to 300px */
+}
+
+/* Appliance breakdown styles for month comparison */
+.month-result .appliance-breakdown {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.month-result .appliance-breakdown h6 {
+  margin: 0 0 8px 0;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+.month-result .appliance-breakdown p {
+  margin: 4px 0;
+  font-size: 0.85rem;
+  color: #4a5568;
+}
+
+/* Dataset selector styles */
+.dataset-dropdown {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  max-width: 300px;
+}
+
+.upload-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.file-upload {
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.file-upload-button {
+  padding: 8px 16px;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.file-upload-button:hover {
+  background-color: #3182ce;
 } 
